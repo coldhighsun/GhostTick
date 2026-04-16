@@ -38,7 +38,7 @@ jobs:
         run: dotnet build --no-restore -c Debug
 
       - name: Test
-        run: dotnet test --no-build -c Debug --logger "github;verbosity=detailed"
+        run: dotnet test --no-build -c Debug
 
   pack:
     name: Pack
