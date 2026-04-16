@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>GhostTick</RootNamespace>
+    <AssemblyName>GhostTick</AssemblyName>
+  </PropertyGroup>
+
+  <!-- NuGet package metadata -->
+  <!-- Version is derived automatically from git tags by MinVer (e.g. v1.2.3) -->
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <PackageId>GhostTick</PackageId>
+    <Authors>your-name</Authors>
+    <Description>High-precision timer toolkit for .NET. Delivers TimerEvent values via System.Threading.Channels using a hybrid sleep+spin strategy for sub-millisecond accuracy.</Description>
+    <PackageTags>timer;ticker;high-precision;channel;async</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/coldhighsun/GhostTick</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/coldhighsun/GhostTick</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- System.Threading.Channels is inbox on net8+; ship the NuGet on older TFMs -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Threading.Channels" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
