@@ -5,6 +5,7 @@
   <!-- ── Library ── -->
   <ItemGroup>
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.3" />
+    <PackageVersion Include="Microsoft.Testing.Platform" Version="2.2.1" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="System.Threading.Channels" Version="10.0.6" />
   </ItemGroup>
