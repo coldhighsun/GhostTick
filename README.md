@@ -178,7 +178,7 @@ MIT
 
 ## 功能特性
 
-- **亚毫秒级精度** — 采用休眠 + 忙等待混合策略
+- **亚毫秒级精度** — 采用休眠 + 忙等待混合策略；将 Windows 的 OS 定时器粒度从约 15 ms 降至约 1 ms
 - **基于 Channel 的 API** — 消费者通过 `ChannelReader<TimerEvent>` 接收 `TimerEvent`，计时线程与消费者延迟完全解耦
 - **漂移修正** — `GhostTicker` 将每个目标时刻计算为 `start + seq × interval`，无论运行多久，累积误差始终有界
 - **多目标框架** — `netstandard2.0`、`net8.0`、`net9.0`、`net10.0`
