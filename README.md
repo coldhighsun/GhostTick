@@ -8,7 +8,7 @@ A high-precision timer toolkit for .NET that delivers events through `System.Thr
 
 ## Features
 
-- **Sub-millisecond precision** — hybrid sleep + busy-spin strategy; on Windows automatically calls `timeBeginPeriod(1)` to reduce OS timer granularity from ~15 ms to ~1 ms
+- **Sub-millisecond precision** — hybrid sleep + busy-spin strategy; Reduce OS timer granularity from ~15 ms to ~1 ms on Windows
 - **Channel-based API** — consumers receive `TimerEvent` values via `ChannelReader<TimerEvent>`, keeping the timer thread fully decoupled from consumer latency
 - **Drift correction** — `GhostTicker` computes every target as `start + seq × interval`, so accumulated error stays bounded over time
 - **Multi-targeting** — `netstandard2.0`, `net8.0`, `net9.0`, `net10.0`
@@ -114,7 +114,7 @@ _ = Task.Run(async () =>
 
 ### Fire accuracy — error vs scheduled time (µs, lower is better)
 
-100 samples per cell. GhostTicker uses `timeBeginPeriod(1)` + busy-spin; others rely on the default OS timer (~15 ms granularity on Windows).
+100 samples per cell.
 
 | Method | Delay | Min | Mean | StdDev | P95 | P99 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -178,7 +178,7 @@ MIT
 
 ## 功能特性
 
-- **亚毫秒级精度** — 采用休眠 + 忙等待混合策略；在 Windows 上自动调用 `timeBeginPeriod(1)`，将 OS 计时器粒度从约 15 ms 降低至约 1 ms
+- **亚毫秒级精度** — 采用休眠 + 忙等待混合策略
 - **基于 Channel 的 API** — 消费者通过 `ChannelReader<TimerEvent>` 接收 `TimerEvent`，计时线程与消费者延迟完全解耦
 - **漂移修正** — `GhostTicker` 将每个目标时刻计算为 `start + seq × interval`，无论运行多久，累积误差始终有界
 - **多目标框架** — `netstandard2.0`、`net8.0`、`net9.0`、`net10.0`
@@ -284,7 +284,7 @@ _ = Task.Run(async () =>
 
 ### 触发精度 — 相对计划时刻的误差（µs，越低越好）
 
-每格 100 个样本。GhostTicker 使用 `timeBeginPeriod(1)` + 忙等待；其他方案依赖默认 OS 计时器（Windows 上约 15 ms 粒度）。
+每格 100 个样本。
 
 | 方法 | 延迟 | 最小值 | 均值 | 标准差 | P95 | P99 |
 |---|---:|---:|---:|---:|---:|---:|
