@@ -1,15 +1,13 @@
 <Project>
-
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <!-- ── Library ── -->
   <ItemGroup>
+    <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.3" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="System.Threading.Channels" Version="10.0.6" />
   </ItemGroup>
-
   <!-- ── Tests ── -->
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />
@@ -17,10 +15,8 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
-
   <!-- ── Benchmarks ── -->
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
   </ItemGroup>
-
 </Project>

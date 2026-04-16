@@ -12,10 +12,16 @@ dotnet build -c Release
 dotnet test -c Release
 
 # Run a single test by name (filter supports wildcards)
-dotnet test -c Release --filter "FullyQualifiedName~Stop_cancels_timer"
+dotnet test -c Release --filter "FullyQualifiedName~Dispose_is_idempotent"
 
 # Run tests for a specific TFM only
 dotnet test -c Release -f net10.0
+
+# Run benchmarks (must be Release)
+dotnet run --project benchmarks/GhostTick.Benchmarks -c Release
+
+# Run examples
+dotnet run --project examples/GhostTick.Examples
 ```
 
 ## Architecture
@@ -34,32 +40,36 @@ tests/GhostTick.Tests/   # xUnit, multi-targeted net8/9/10
 
 ### Precision Strategy
 
-`PrecisionWaiter.WaitUntil` is the single timing primitive used by `GhostTicker`:
+`PrecisionWaiter.WaitUntil` is the single timing primitive:
 1. Compute `remaining = targetTimestamp - Stopwatch.GetTimestamp()`
 2. If `remaining > spinThreshold`, sleep `(remaining - spinThreshold)` ms via `Thread.Sleep`
 3. Otherwise busy-spin with `Thread.SpinWait(10)` until the timestamp is reached
 
-Default `SpinThreshold` is 1.5 ms — sufficient margin for Windows' ~15 ms OS timer granularity.
+Default `SpinThreshold` is 1.5 ms — sufficient margin for Windows' ~15 ms OS timer granularity. Cancellation is only checked at the top of the outer loop, not inside the spin, so stop latency is bounded by the spin threshold.
 
-### Drift Correction (GhostTicker)
+### Drift Correction
 
 Each tick target is computed as:
 ```
 targetTs = startTs + (long)((double)seq * intervalTicks)
 ```
-Not `lastFireTs + intervalTicks`. This bounds accumulated drift regardless of runtime duration.
-
-Note: the multiplication uses `double` arithmetic. For typical workloads (millisecond-range intervals, seq values well below 10⁹) the floating-point rounding error is sub-microsecond and inconsequential. At extremely large seq values the error is still bounded and does not accumulate across ticks.
+Not `lastFireTs + intervalTicks`. This bounds accumulated drift regardless of runtime duration. The `double` multiplication introduces sub-microsecond rounding error at typical seq values; it does not accumulate across ticks.
 
 ### Channel Semantics
 
-`GhostTicker` uses a `BoundedChannel<TimerEvent>` (capacity 1 by default, configurable):
-- `BoundedChannelFullMode.DropOldest` by default — slow consumers lose old ticks, not new ones. `Sequence` gaps are detectable by the consumer.
+`GhostTicker` uses a `BoundedChannel<TimerEvent>` (capacity 1 by default):
+- `BoundedChannelFullMode.DropOldest` by default — slow consumers lose old ticks, not new ones. Gaps in `Sequence` reveal how many ticks were dropped.
+- `FullMode = Wait` blocks the timer thread and degrades precision — avoid in latency-sensitive code.
+- The channel completes (reader returns `false` from `WaitToReadAsync`) when `Stop()` or `Dispose()` is called.
 
 ### Threading
 
-- `GhostTicker` owns a dedicated background `Thread` (default `ThreadPriority.AboveNormal`) to avoid thread-pool starvation at high tick rates.
+`GhostTicker` owns a dedicated background `Thread` (default `ThreadPriority.AboveNormal`) to avoid thread-pool starvation at high tick rates. The `CancellationToken` is captured as a struct value at construction time so the thread closure never touches `_cts` after disposal. `Dispose()` is idempotent via an `Interlocked.Exchange` guard.
 
 ### netstandard2.0 Compatibility
 
-`System.Threading.Channels` is pulled in as a NuGet package for netstandard2.0 only (see the `Condition` in `GhostTick.csproj`). `IAsyncEnumerable<T>` / `ReadAllAsync()` requires netstandard2.1+ or net5+; on netstandard2.0 consumers use `WaitToReadAsync` + `TryRead`.
+`System.Threading.Channels` is pulled in as a NuGet package for netstandard2.0 only (conditioned in `GhostTick.csproj`). `IAsyncEnumerable<T>` / `ReadAllAsync()` requires netstandard2.1+ or net5+; on netstandard2.0 consumers use `WaitToReadAsync` + `TryRead`.
+
+### Versioning
+
+NuGet package version is derived automatically from git tags by MinVer (prefix `v`, e.g. `v1.2.3`).
