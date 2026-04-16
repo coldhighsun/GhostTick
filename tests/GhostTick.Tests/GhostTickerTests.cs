@@ -61,6 +61,28 @@ public class GhostTickerTests
     }
 
     [Fact]
+    public async Task Ticker_drift_corrects_over_time()
+    {
+        // Compare first-tick scheduled vs last-tick scheduled; gap should be (n-1)*interval.
+        var interval = TimeSpan.FromMilliseconds(20);
+        using var ticker = new GhostTicker(interval);
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+
+        TimerEvent first = default, last = default;
+        for (var i = 0; i < 20; i++)
+        {
+            var evt = await ticker.Reader.ReadAsync(cts.Token);
+            if (i == 0)
+                first = evt;
+            last = evt;
+        }
+
+        var gap = last.ScheduledAt - first.ScheduledAt;
+        var expected = interval * 19; // from tick 1 to tick 20 = 19 intervals
+        Assert.InRange(gap, expected - TimeSpan.FromMicroseconds(100), expected + TimeSpan.FromMicroseconds(100));
+    }
+
+    [Fact]
     public async Task Ticker_emits_sequential_events()
     {
         using var ticker = new GhostTicker(TimeSpan.FromMilliseconds(20));
