@@ -11,7 +11,7 @@
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <PackageId>GhostTick</PackageId>
-    <Authors>your-name</Authors>
+    <Authors>coldhighsun</Authors>
     <Description>High-precision timer toolkit for .NET. Delivers TimerEvent values via System.Threading.Channels using a hybrid sleep+spin strategy for sub-millisecond accuracy.</Description>
     <PackageTags>timer;ticker;high-precision;channel;async</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
