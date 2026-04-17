@@ -59,7 +59,7 @@ Not `lastFireTs + intervalTicks`. This bounds accumulated drift regardless of ru
 
 `GhostTicker` uses a `BoundedChannel<TimerEvent>` (capacity 1 by default):
 - `BoundedChannelFullMode.DropOldest` by default — slow consumers lose old ticks, not new ones. Gaps in `Sequence` reveal how many ticks were dropped.
-- `FullMode = Wait` blocks the timer thread and degrades precision — avoid in latency-sensitive code.
+- `FullMode = Wait` has no effect on the timer thread — `TickLoop` always calls `TryWrite` (never `WriteAsync`), so ticks are still dropped when the channel is full regardless of this setting.
 - The channel completes (reader returns `false` from `WaitToReadAsync`) when `Stop()` or `Dispose()` is called.
 
 ### Threading
