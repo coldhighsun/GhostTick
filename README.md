@@ -76,7 +76,7 @@ The timer thread calls `TryWrite` and never blocks. When the channel is full:
 
 - **`DropOldest`** (default) — oldest pending tick is discarded; consumer always gets the freshest event. Gaps in `Sequence` reveal how many ticks were dropped.
 - **`DropNewest`** — new tick is discarded; consumer drains at its own pace.
-- **`Wait`** — blocks the timer thread (not recommended for precision use).
+- **`Wait`** — has no effect on the timer thread; `TryWrite` is always used so ticks are still dropped when the channel is full.
 
 ## Fan-out to multiple consumers
 
@@ -246,7 +246,7 @@ new GhostTicker(TimeSpan interval, GhostTickerOptions? options = null)
 
 - **`DropOldest`**（默认）— 丢弃最旧的待处理 tick，消费者始终获得最新事件。`Sequence` 出现间隙即可得知丢弃了多少 tick。
 - **`DropNewest`** — 丢弃新到达的 tick，消费者按自身速度消费。
-- **`Wait`** — 阻塞计时线程（不建议在精度敏感场景中使用）。
+- **`Wait`** — 对计时线程无效；始终使用 `TryWrite`，channel 满时 tick 仍会被丢弃。
 
 ## 广播给多个消费者
 
