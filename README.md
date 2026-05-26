@@ -3,6 +3,7 @@
 [![CI](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml/badge.svg)](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml)
 [![NuGet Version](https://img.shields.io/nuget/v/GhostTick)](https://www.nuget.org/packages/GhostTick)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/GhostTick)](https://www.nuget.org/packages/GhostTick)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A high-precision timer toolkit for .NET that delivers events through `System.Threading.Channels`.
 
@@ -11,7 +12,7 @@ A high-precision timer toolkit for .NET that delivers events through `System.Thr
 - **Sub-millisecond precision** — hybrid sleep + busy-spin strategy; Reduce OS timer granularity from ~15 ms to ~1 ms on Windows
 - **Channel-based API** — consumers receive `TimerEvent` values via `ChannelReader<TimerEvent>`, keeping the timer thread fully decoupled from consumer latency
 - **Drift correction** — `GhostTicker` computes every target as `start + seq × interval`, so accumulated error stays bounded over time
-- **Multi-targeting** — `netstandard2.0`, `net8.0`, `net9.0`, `net10.0`
+- **Multi-targeting** — `netstandard2.0`, `net8.0`, `net10.0`
 
 ## Installation
 
@@ -173,6 +174,7 @@ MIT
 [![CI](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml/badge.svg)](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml)
 [![NuGet Version](https://img.shields.io/nuget/v/GhostTick)](https://www.nuget.org/packages/GhostTick)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/GhostTick)](https://www.nuget.org/packages/GhostTick)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 适用于 .NET 的高精度计时工具库，通过 `System.Threading.Channels` 传递事件。
 
@@ -181,7 +183,7 @@ MIT
 - **亚毫秒级精度** — 采用休眠 + 忙等待混合策略；将 Windows 的 OS 定时器粒度从约 15 ms 降至约 1 ms
 - **基于 Channel 的 API** — 消费者通过 `ChannelReader<TimerEvent>` 接收 `TimerEvent`，计时线程与消费者延迟完全解耦
 - **漂移修正** — `GhostTicker` 将每个目标时刻计算为 `start + seq × interval`，无论运行多久，累积误差始终有界
-- **多目标框架** — `netstandard2.0`、`net8.0`、`net9.0`、`net10.0`
+- **多目标框架** — `netstandard2.0`、`net8.0`、`net10.0`
 
 ## 安装
 

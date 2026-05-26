@@ -1,24 +1,15 @@
 <Project>
 
-  <!--
-    Applied to every project in the solution.
-    UseArtifactsOutput redirects all bin/obj output to <repo-root>/artifacts/
-    following the layout:
-      artifacts/bin/<ProjectName>/<Configuration>/
-      artifacts/obj/<ProjectName>/
-  -->
-
-  <PropertyGroup>
-    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
-    <UseArtifactsOutput>true</UseArtifactsOutput>
-  </PropertyGroup>
-
-  <!-- Shared code quality settings -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
 </Project>

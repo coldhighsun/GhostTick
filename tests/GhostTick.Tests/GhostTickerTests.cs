@@ -23,6 +23,25 @@ public class GhostTickerTests
     }
 
     [Fact]
+    public async Task Dispose_completes_channel()
+    {
+        var ticker = new GhostTicker(TimeSpan.FromMilliseconds(10));
+        await ticker.Reader.ReadAsync(TestContext.Current.CancellationToken);
+        ticker.Dispose();
+
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(500));
+        try
+        {
+            while (await ticker.Reader.WaitToReadAsync(cts.Token))
+                ticker.Reader.TryRead(out _);
+        }
+        catch (OperationCanceledException)
+        {
+            Assert.Fail("Channel did not complete after Dispose().");
+        }
+    }
+
+    [Fact]
     public void Dispose_does_not_throw()
     {
         var ticker = new GhostTicker(TimeSpan.FromMilliseconds(10));
@@ -38,13 +57,33 @@ public class GhostTickerTests
     }
 
     [Fact]
+    public async Task FiredAt_is_not_before_ScheduledAt()
+    {
+        using var ticker = new GhostTicker(TimeSpan.FromMilliseconds(20));
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(500));
+
+        for (var i = 0; i < 5; i++)
+        {
+            var evt = await ticker.Reader.ReadAsync(cts.Token);
+            Assert.True(evt.FiredAt >= evt.ScheduledAt,
+                $"Tick {evt.Sequence}: FiredAt {evt.FiredAt:O} is before ScheduledAt {evt.ScheduledAt:O}");
+        }
+    }
+
+    [Fact]
+    public void Negative_interval_throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new GhostTicker(TimeSpan.FromMilliseconds(-1)));
+    }
+
+    [Fact]
     public async Task Stop_completes_channel()
     {
         using var ticker = new GhostTicker(TimeSpan.FromMilliseconds(10));
 
         // Consume a couple of ticks, then stop.
-        await ticker.Reader.ReadAsync();
-        await ticker.Reader.ReadAsync();
+        await ticker.Reader.ReadAsync(TestContext.Current.CancellationToken);
+        await ticker.Reader.ReadAsync(TestContext.Current.CancellationToken);
         ticker.Stop();
 
         // Drain until complete; should not hang.
@@ -119,5 +158,11 @@ public class GhostTickerTests
         var expected = interval * 10;
         // Allow ±15 ms total for 10 ticks.
         Assert.InRange(sw.Elapsed, expected - TimeSpan.FromMilliseconds(5), expected + TimeSpan.FromMilliseconds(15));
+    }
+
+    [Fact]
+    public void Zero_interval_throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new GhostTicker(TimeSpan.Zero));
     }
 }

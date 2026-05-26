@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build all target frameworks
 dotnet build -c Release
 
-# Run all tests (net8.0 / net9.0 / net10.0)
+# Run all tests (net8.0 / net10.0)
 dotnet test -c Release
 
 # Run a single test by name (filter supports wildcards)
@@ -27,10 +27,10 @@ dotnet run --project examples/GhostTick.Examples
 ## Architecture
 
 ```
-src/GhostTick/           # Library (netstandard2.0 + net8/9/10)
+src/GhostTick/           # Library (netstandard2.0 + net8/10)
   TimerEvent.cs          # readonly struct: ScheduledAt, FiredAt, Sequence, Drift
   GhostTicker.cs         # Repeating ticker → ChannelReader<TimerEvent>
-  GhostTickerOptions.cs  # SpinThreshold, ChannelCapacity, FullMode, ThreadPriority
+  GhostTickerOptions.cs  # SpinThreshold, ChannelCapacity, FullMode, ThreadPriority, ThreadName
   Internal/
     PrecisionWaiter.cs   # Core timing primitive (hybrid sleep + spin)
 
