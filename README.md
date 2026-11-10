@@ -3,6 +3,7 @@
 [![CI](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml/badge.svg)](https://github.com/coldhighsun/GhostTick/actions/workflows/ci.yml)
 [![NuGet Version](https://img.shields.io/nuget/v/GhostTick)](https://www.nuget.org/packages/GhostTick)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/GhostTick)](https://www.nuget.org/packages/GhostTick)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/10.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **English** | [简体中文](README.zh-CN.md)
