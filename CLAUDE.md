@@ -5,17 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Test Commands
 
 ```bash
-# Build all target frameworks
+# Build (net10.0 only)
 dotnet build -c Release
 
-# Run all tests (net8.0 / net10.0)
+# Run all tests
 dotnet test -c Release
 
 # Run a single test by name (filter supports wildcards)
 dotnet test -c Release --filter "FullyQualifiedName~Dispose_is_idempotent"
-
-# Run tests for a specific TFM only
-dotnet test -c Release -f net10.0
 
 # Run benchmarks (must be Release)
 dotnet run --project benchmarks/GhostTick.Benchmarks -c Release
@@ -27,14 +24,14 @@ dotnet run --project examples/GhostTick.Examples
 ## Architecture
 
 ```
-src/GhostTick/           # Library (netstandard2.0 + net8/10)
+src/GhostTick/           # Library (net10.0)
   TimerEvent.cs          # readonly struct: ScheduledAt, FiredAt, Sequence, Drift
   GhostTicker.cs         # Repeating ticker → ChannelReader<TimerEvent>
   GhostTickerOptions.cs  # SpinThreshold, ChannelCapacity, FullMode, ThreadPriority, ThreadName
   Internal/
     PrecisionWaiter.cs   # Core timing primitive (hybrid sleep + spin)
 
-tests/GhostTick.Tests/   # xUnit, multi-targeted net8/9/10
+tests/GhostTick.Tests/   # xUnit, net10.0
   GhostTickerTests.cs
 ```
 
@@ -65,10 +62,6 @@ Not `lastFireTs + intervalTicks`. This bounds accumulated drift regardless of ru
 ### Threading
 
 `GhostTicker` owns a dedicated background `Thread` (default `ThreadPriority.AboveNormal`) to avoid thread-pool starvation at high tick rates. The `CancellationToken` is captured as a struct value at construction time so the thread closure never touches `_cts` after disposal. `Dispose()` is idempotent via an `Interlocked.Exchange` guard.
-
-### netstandard2.0 Compatibility
-
-`System.Threading.Channels` is pulled in as a NuGet package for netstandard2.0 only (conditioned in `GhostTick.csproj`). `IAsyncEnumerable<T>` / `ReadAllAsync()` requires netstandard2.1+ or net5+; on netstandard2.0 consumers use `WaitToReadAsync` + `TryRead`.
 
 ### Versioning
 

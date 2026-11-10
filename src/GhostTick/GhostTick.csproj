@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>GhostTick</RootNamespace>
     <AssemblyName>GhostTick</AssemblyName>
   </PropertyGroup>
@@ -29,11 +29,6 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <!-- System.Threading.Channels is inbox on net8+; ship the NuGet on older TFMs -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Threading.Channels" />
   </ItemGroup>
 
   <ItemGroup>

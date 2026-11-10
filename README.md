@@ -14,7 +14,7 @@ A high-precision timer toolkit for .NET that delivers events through `System.Thr
 - **Sub-millisecond precision** — hybrid sleep + busy-spin strategy; Reduce OS timer granularity from ~15 ms to ~1 ms on Windows
 - **Channel-based API** — consumers receive `TimerEvent` values via `ChannelReader<TimerEvent>`, keeping the timer thread fully decoupled from consumer latency
 - **Drift correction** — `GhostTicker` computes every target as `start + seq × interval`, so accumulated error stays bounded over time
-- **Multi-targeting** — `netstandard2.0`, `net8.0`, `net10.0`
+- **Target framework** — `net10.0`
 
 ## Installation
 
