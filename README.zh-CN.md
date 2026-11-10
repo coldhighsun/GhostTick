@@ -114,7 +114,7 @@ _ = Task.Run(async () =>
 
 ## 基准测试
 
-> 环境：Windows 11，13th Gen Intel Core i9-13980HX，.NET 10.0.6，BenchmarkDotNet v0.15.8
+> 环境：Windows 11，13th Gen Intel Core i9-13980HX，.NET 10.0.14，BenchmarkDotNet v0.15.8
 
 ### 触发精度 — 相对计划时刻的误差（µs，越低越好）
 
@@ -122,20 +122,20 @@ _ = Task.Run(async () =>
 
 | 方法 | 延迟 | 最小值 | 均值 | 标准差 | P95 | P99 |
 |---|---:|---:|---:|---:|---:|---:|
-| **GhostTicker** | 1 ms | **0.0** | **0.3** | **0.2** | **0.7** | **0.9** |
-| Task.Delay | 1 ms | 12,549 | 14,623 | 565 | 15,238 | 16,326 |
-| Threading.Timer | 1 ms | 13,260 | 14,545 | 470 | 15,362 | 15,784 |
-| Timers.Timer | 1 ms | 12,078 | 14,674 | 560 | 15,372 | 16,535 |
-| **GhostTicker** | 5 ms | **0.0** | **5,487** | **4,806** | **12,641** | **13,216** |
-| Task.Delay | 5 ms | 4,492 | 10,559 | 983 | 11,205 | 16,578 |
-| Threading.Timer | 5 ms | 9,627 | 10,665 | 457 | 11,166 | 11,929 |
-| Timers.Timer | 5 ms | 9,783 | 10,539 | 440 | 11,177 | 11,478 |
-| **GhostTicker** | 10 ms | **0.0** | **5,434** | **4,158** | **11,927** | **13,139** |
-| Task.Delay | 10 ms | 4,507 | 5,603 | 505 | 6,145 | 6,996 |
-| Threading.Timer | 10 ms | 4,781 | 5,684 | 480 | 6,253 | 7,190 |
-| Timers.Timer | 10 ms | 2,701 | 5,552 | 641 | 6,359 | 8,460 |
+| **GhostTicker** | 1 ms | **0.0** | **0.3** | **0.5** | **0.5** | **0.7** |
+| Task.Delay | 1 ms | 13,598 | 14,421 | 375 | 15,052 | 15,129 |
+| Threading.Timer | 1 ms | 13,647 | 14,384 | 407 | 15,072 | 15,209 |
+| Timers.Timer | 1 ms | 13,636 | 14,428 | 377 | 15,059 | 15,146 |
+| **GhostTicker** | 5 ms | **0.1** | **0.7** | **1.4** | **0.9** | **8.4** |
+| Task.Delay | 5 ms | 9,646 | 10,369 | 437 | 11,190 | 11,438 |
+| Threading.Timer | 5 ms | 9,717 | 10,459 | 453 | 11,079 | 11,680 |
+| Timers.Timer | 5 ms | 9,533 | 10,376 | 425 | 11,103 | 11,148 |
+| **GhostTicker** | 10 ms | **0.3** | **2.3** | **10.2** | **4.1** | **42.4** |
+| Task.Delay | 10 ms | 4,542 | 5,455 | 430 | 6,061 | 6,675 |
+| Threading.Timer | 10 ms | 4,594 | 5,417 | 436 | 6,106 | 6,388 |
+| Timers.Timer | 10 ms | 4,744 | 5,409 | 427 | 6,039 | 6,167 |
 
-在 1 ms 延迟下，GhostTicker 均值误差为 **0.3 µs**，其他方案约为 **14,600 µs** — 提升约 **49,000×**。
+在 1 ms 延迟下，GhostTicker 均值误差为 **0.3 µs**，其他方案约为 **14,400 µs** — 提升约 **48,000×**。
 
 ### Tick 节奏 — 100 次连续 tick 的总耗时（ms，越低越好）
 
@@ -143,15 +143,15 @@ GhostTicker 使用独立的 `AboveNormal` 优先级线程；其他方案依赖�
 
 | 方法 | 间隔 | 均值 | 比率 | 内存分配 |
 |---|---:|---:|---:|---:|
-| **GhostTicker** | 1 ms | **100.4 ms** | 1.00 | 16.27 KB |
-| PeriodicTimer | 1 ms | 1,552.1 ms | 15.46× | 2.32 KB |
-| Threading.Timer | 1 ms | 1,556.6 ms | 15.50× | 2.80 KB |
-| **GhostTicker** | 10 ms | **1,007.7 ms** | 1.00 | 14.40 KB |
-| PeriodicTimer | 10 ms | 1,557.2 ms | 1.55× | 2.32 KB |
-| Threading.Timer | 10 ms | 1,557.5 ms | 1.55× | 2.80 KB |
-| **GhostTicker** | 50 ms | 5,004.3 ms | 1.00 | 16.72 KB |
-| PeriodicTimer | 50 ms | 5,008.6 ms | 1.00× | 2.32 KB |
-| Threading.Timer | 50 ms | 5,008.5 ms | 1.00× | 14.85 KB |
+| **GhostTicker** | 1 ms | **100.1 ms** | 1.00 | 16.64 KB |
+| PeriodicTimer | 1 ms | 1,542.9 ms | 15.42× | 2.32 KB |
+| Threading.Timer | 1 ms | 1,542.0 ms | 15.41× | 2.80 KB |
+| **GhostTicker** | 10 ms | **1,000.1 ms** | 1.00 | 16.87 KB |
+| PeriodicTimer | 10 ms | 1,544.4 ms | 1.54× | 14.37 KB |
+| Threading.Timer | 10 ms | 1,539.8 ms | 1.54× | 2.83 KB |
+| **GhostTicker** | 50 ms | 5,000.1 ms | 1.00 | 17.03 KB |
+| PeriodicTimer | 50 ms | 5,008.2 ms | 1.00× | 2.32 KB |
+| Threading.Timer | 50 ms | 5,006.5 ms | 1.00× | 2.80 KB |
 
 本地运行基准测试：
 ```
