@@ -12,7 +12,7 @@ dotnet build -c Release
 dotnet test -c Release
 
 # Run a single test by name (filter supports wildcards)
-dotnet test -c Release --filter "FullyQualifiedName~Dispose_is_idempotent"
+dotnet test -c Release --filter "FullyQualifiedName~Dispose_CalledTwice_DoesNotThrow"
 
 # Run benchmarks (must be Release)
 dotnet run --project benchmarks/GhostTick.Benchmarks -c Release
@@ -37,20 +37,20 @@ tests/GhostTick.Tests/   # xUnit, net10.0
 
 ### Precision Strategy
 
-`PrecisionWaiter.WaitUntil` is the single timing primitive:
+`PrecisionWaiter.WaitUntil` is the single timing primitive (one instance per ticker thread):
 1. Compute `remaining = targetTimestamp - Stopwatch.GetTimestamp()`
-2. If `remaining > spinThreshold`, sleep `(remaining - spinThreshold)` ms via `Thread.Sleep`
+2. If `remaining > spinThreshold`, sleep `(remaining - spinThreshold)` ms. On Windows this uses a high-resolution waitable timer (`CREATE_WAITABLE_TIMER_HIGH_RESOLUTION`, Win10 1803+) waited on together with the cancellation handle, because plain `Sleep`/`WaitOne` is bound to the ~15.6 ms system tick and can overshoot the target. Elsewhere (or if the timer cannot be created) it falls back to `ct.WaitHandle.WaitOne`.
 3. Otherwise busy-spin with `Thread.SpinWait(10)` until the timestamp is reached
 
-Default `SpinThreshold` is 1.5 ms — sufficient margin for Windows' ~15 ms OS timer granularity. Cancellation is only checked at the top of the outer loop, not inside the spin, so stop latency is bounded by the spin threshold.
+Default `SpinThreshold` is 1.5 ms. The sleep phase is interruptible by cancellation; only the final spin (at most `SpinThreshold`) is not, so stop latency is bounded by the spin threshold.
 
 ### Drift Correction
 
-Each tick target is computed as:
+The time origin (`startTs`/`startTime`) is captured in the constructor, not on the timer thread. Each tick target is computed with exact 128-bit integer math as:
 ```
-targetTs = startTs + (long)((double)seq * intervalTicks)
+targetTs = startTs + seq * interval.Ticks * Stopwatch.Frequency / TimeSpan.TicksPerSecond
 ```
-Not `lastFireTs + intervalTicks`. This bounds accumulated drift regardless of runtime duration. The `double` multiplication introduces sub-microsecond rounding error at typical seq values; it does not accumulate across ticks.
+Not `lastFireTs + intervalTicks`, and not a pre-truncated per-interval tick count, so neither runtime duration nor rounding accumulates drift.
 
 ### Channel Semantics
 

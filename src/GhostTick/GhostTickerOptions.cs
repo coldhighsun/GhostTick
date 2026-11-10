@@ -8,9 +8,10 @@ namespace GhostTick;
 public sealed class GhostTickerOptions
 {
     /// <summary>
-    /// Default options singleton (immutable after construction).
+    /// Gets a new instance populated with default values.  A fresh instance is returned on every
+    /// access so that mutating it can never affect other tickers.
     /// </summary>
-    public static readonly GhostTickerOptions Default = new();
+    public static GhostTickerOptions Default => new();
 
     /// <summary>
     /// Capacity of the event channel.  When the consumer is slower than the tick rate
@@ -23,6 +24,10 @@ public sealed class GhostTickerOptions
     /// What to do when the channel is full.
     /// Default: <see cref="BoundedChannelFullMode.DropOldest"/> — keeps the freshest tick.
     /// </summary>
+    /// <remarks>
+    /// The timer thread never blocks: it always uses <c>TryWrite</c>, so
+    /// <see cref="BoundedChannelFullMode.Wait"/> behaves like dropping the new tick.
+    /// </remarks>
     public BoundedChannelFullMode FullMode { get; set; } = BoundedChannelFullMode.DropOldest;
 
     /// <summary>

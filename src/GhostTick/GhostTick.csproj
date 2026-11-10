@@ -4,12 +4,16 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>GhostTick</RootNamespace>
     <AssemblyName>GhostTick</AssemblyName>
+    <!-- Required by the source-generated LibraryImport P/Invokes in PrecisionWaiter. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <!-- NuGet package metadata -->
   <!-- Version is derived automatically from git tags by MinVer (e.g. v1.2.3) -->
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
+    <!-- 2.0: GhostTickerOptions.Default changed from a field to a property (binary-breaking), on top of the dropped target frameworks. -->
+    <MinVerMinimumMajorMinor>2.0</MinVerMinimumMajorMinor>
     <PackageId>GhostTick</PackageId>
     <Authors>coldhighsun</Authors>
     <Description>High-precision timer toolkit for .NET. Delivers TimerEvent values via System.Threading.Channels using a hybrid sleep+spin strategy for sub-millisecond accuracy.</Description>
@@ -29,6 +33,10 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="GhostTick.Tests" />
   </ItemGroup>
 
   <ItemGroup>
