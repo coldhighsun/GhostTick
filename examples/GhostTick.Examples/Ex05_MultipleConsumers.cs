@@ -14,7 +14,7 @@ internal static class Ex05MultipleConsumers
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex07: Fan-out to multiple consumers ===");
+        Console.WriteLine("=== Ex05: Fan-out to multiple consumers ===");
 
         using var ticker = new GhostTicker(TimeSpan.FromMilliseconds(100));
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
@@ -38,7 +38,7 @@ internal static class Ex05MultipleConsumers
 
             ch1.Writer.TryComplete();
             ch2.Writer.TryComplete();
-        }, cts.Token);
+        });
 
         // Consumer 1 — prints even sequences only.
         var consumer1 = Task.Run(async () =>
@@ -50,7 +50,7 @@ internal static class Ex05MultipleConsumers
                         Console.WriteLine($"  Consumer-1  #{evt.Sequence,2}  drift={evt.Drift.TotalMilliseconds,5:F1} ms");
             }
             catch (OperationCanceledException) { }
-        }, cts.Token);
+        });
 
         // Consumer 2 — prints odd sequences only.
         var consumer2 = Task.Run(async () =>
@@ -62,7 +62,7 @@ internal static class Ex05MultipleConsumers
                         Console.WriteLine($"  Consumer-2  #{evt.Sequence,2}  drift={evt.Drift.TotalMilliseconds,5:F1} ms");
             }
             catch (OperationCanceledException) { }
-        }, cts.Token);
+        });
 
         await Task.WhenAll(dispatcher, consumer1, consumer2);
 
