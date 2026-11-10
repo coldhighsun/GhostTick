@@ -13,7 +13,7 @@ internal static class Ex04CancellationAndStop
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex06: Cancellation and Stop ===");
+        Console.WriteLine("=== Ex04: Cancellation and Stop ===");
 
         // --- Pattern A: cancel the reader, not the ticker ---
         Console.WriteLine("  Pattern A — cancel reader via CancellationToken:");

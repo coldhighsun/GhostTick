@@ -10,7 +10,7 @@ internal static class Ex01BasicTicker
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex03: Basic repeating ticker (100 ms) ===");
+        Console.WriteLine("=== Ex01: Basic repeating ticker (100 ms) ===");
 
         using var ticker = new GhostTicker(TimeSpan.FromMilliseconds(100));
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));

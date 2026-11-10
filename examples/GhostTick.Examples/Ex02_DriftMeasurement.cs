@@ -11,7 +11,7 @@ internal static class Ex02DriftMeasurement
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex04: Drift measurement over 50 ticks (20 ms interval) ===");
+        Console.WriteLine("=== Ex02: Drift measurement over 50 ticks (20 ms interval) ===");
 
         const int tickCount = 50;
         var interval = TimeSpan.FromMilliseconds(20);

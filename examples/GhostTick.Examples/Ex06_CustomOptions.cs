@@ -14,7 +14,7 @@ internal static class Ex06CustomOptions
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex08: Custom options ===");
+        Console.WriteLine("=== Ex06: Custom options ===");
 
         // --- GhostTickerOptions ---
         var tickerOpts = new GhostTickerOptions

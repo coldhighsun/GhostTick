@@ -12,7 +12,7 @@ internal static class Ex03SlowConsumer
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("=== Ex05: Slow consumer — tick dropping (50 ms tick, 200 ms consumer) ===");
+        Console.WriteLine("=== Ex03: Slow consumer — tick dropping (50 ms tick, 200 ms consumer) ===");
 
         var opts = new GhostTickerOptions
         {
